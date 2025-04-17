@@ -6,6 +6,9 @@ import { Logger } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = app.get(ConfigService).get<number>('app.port') ?? 3000;
+
+  app.setGlobalPrefix('api');
+
   await app.listen(port);
 
   const logger = new Logger('boostrap');
