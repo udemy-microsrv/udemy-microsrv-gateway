@@ -6,23 +6,30 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Inject,
+  Query,
 } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { PaginationDto } from 'src/common/pagination/pagination.dto';
+import { MICROSRV_PRODUCT } from 'src/config/microservices.token';
 
 @Controller('products')
 export class ProductsController {
+  constructor(@Inject(MICROSRV_PRODUCT) private productClient: ClientProxy) {}
+
   @Post()
   create() {
     return 'create';
   }
 
   @Get()
-  findAll() {
-    return 'findAll';
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.productClient.send({ cmd: 'product.find_all' }, paginationDto);
   }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return `findOne (${id})`;
+    return this.productClient.send({ cmd: 'product.find_one' }, { id });
   }
 
   @Patch(':id')
