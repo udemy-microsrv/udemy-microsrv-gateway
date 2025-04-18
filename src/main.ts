@@ -9,7 +9,12 @@ async function bootstrap() {
   const port = app.get(ConfigService).get<number>('app.port') ?? 3000;
 
   app.setGlobalPrefix('api');
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
   app.useGlobalFilters(new MicrosrvExceptionFilter());
 
   await app.listen(port);
