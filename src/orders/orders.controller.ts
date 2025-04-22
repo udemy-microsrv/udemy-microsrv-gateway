@@ -7,12 +7,14 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { MICROSRV_ORDER } from '../config/microservices.token';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { catchError } from 'rxjs';
 import { RpcError } from '../common/exceptions/rpc-error';
+import { PaginationAndFilterDto } from './dto/pagination-and-filter.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -24,8 +26,8 @@ export class OrdersController {
   }
 
   @Get()
-  findAll() {
-    return 'findAll';
+  findAll(@Query() paginationAndFilterDto: PaginationAndFilterDto) {
+    return this.orderClient.send('order.find_all', paginationAndFilterDto);
   }
 
   @Get(':id')
