@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Inject,
@@ -9,14 +10,15 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { MICROSRV_ORDER } from '../config/microservices.token';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Controller('orders')
 export class OrdersController {
   constructor(@Inject(MICROSRV_ORDER) private orderClient: ClientProxy) {}
 
   @Post()
-  create() {
-    return 'create';
+  create(@Body() createOrderDto: CreateOrderDto) {
+    return this.orderClient.send('order.create', createOrderDto);
   }
 
   @Get()
