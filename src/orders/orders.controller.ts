@@ -8,9 +8,11 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { MICROSRV_ORDER } from '../config/microservices.token';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { catchError } from 'rxjs';
+import { RpcError } from '../common/exceptions/rpc-error';
 
 @Controller('orders')
 export class OrdersController {
@@ -28,7 +30,11 @@ export class OrdersController {
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return `findOne (${id})`;
+    return this.orderClient.send('order.find_one', { id }).pipe(
+      catchError((err: RpcError) => {
+        throw new RpcException(err);
+      }),
+    );
   }
 
   @Patch(':id')
