@@ -2,8 +2,7 @@ import * as Joi from 'joi';
 
 export default Joi.object({
   PORT: Joi.number().required(),
-  MICROSRV_PRODUCT_HOST: Joi.string().required(),
-  MICROSRV_PRODUCT_PORT: Joi.number().required(),
-  MICROSRV_ORDER_HOST: Joi.string().required(),
-  MICROSRV_ORDER_PORT: Joi.number().required(),
+  NATS_SERVERS: Joi.string()
+    .required()
+    .regex(/^([a-zA-Z]+:\/\/[^\s,]+)(,[a-zA-Z]+:\/\/[^\s,]+)*$/),
 }).unknown(true);
