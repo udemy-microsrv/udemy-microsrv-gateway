@@ -21,7 +21,11 @@ export class AuthController {
 
   @Post('login')
   login(@Body() loginUserDto: LoginUserDto) {
-    return this.clientProxy.send('auth.login_user', loginUserDto);
+    return this.clientProxy.send('auth.login_user', loginUserDto).pipe(
+      catchError((err: RpcError) => {
+        throw new RpcException(err);
+      }),
+    );
   }
 
   @Get('verify-token')
